@@ -4,5 +4,6 @@ variable "service_name" {
 }
 
 variable "project" {
-  type = string
+  description = "The project name"
+  type        = string
 }

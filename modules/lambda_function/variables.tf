@@ -4,29 +4,36 @@ variable "lambda_function_name" {
 }
 
 variable "aws_account_id" {
-  type = string
+  description = "The AWS account ID"
+  type        = string
 }
 
 variable "aws_region" {
-  type = string
+  description = "The AWS region where the Lambda function is deployed"
+  type        = string
 }
 
 variable "stage" {
-  type = string
+  description = "The deployment stage (e.g., dev, test, prod)"
+  type        = string
 }
 
 variable "project" {
-  type = string
+  description = "The name of the project"
+  type        = string
 }
 
 variable "aws_access_key_id_admin" {
-  type = string
+  description = "The AWS access key ID for the admin user"
+  type        = string
 }
 
 variable "aws_secret_access_key_admin" {
-  type = string
+  description = "The AWS secret access key for the admin user"
+  type        = string
 }
 
 variable "version_number" {
-  type = string
+  description = "The version number of the Lambda function"
+  type        = string
 }
