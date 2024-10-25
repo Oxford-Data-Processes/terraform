@@ -3,7 +3,7 @@ variable "aws_account_id" {
   type        = string
 }
 
-variable "project" {
-  description = "The project name"
+variable "bucket_name" {
+  description = "The bucket name"
   type        = string
 }
