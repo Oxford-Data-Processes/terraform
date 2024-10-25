@@ -1,10 +1,12 @@
-module "s3_bucket_module" {
-  source        = "terraform-aws-modules/s3-bucket/aws"
-  bucket        = var.bucket_name
-  attach_policy = true
-  policy        = data.aws_iam_policy_document.bucket_policy.json
+resource "aws_s3_bucket" "s3_bucket" {
+  bucket = var.bucket_name
 
-  versioning = {
-    status     = true
+  versioning {
+    enabled = true
   }
+}
+
+resource "aws_s3_bucket_policy" "s3_bucket_policy" {
+  bucket = aws_s3_bucket.s3_bucket.bucket
+  policy = data.aws_iam_policy_document.bucket_policy.json
 }
