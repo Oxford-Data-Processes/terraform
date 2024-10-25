@@ -4,7 +4,7 @@ module "s3_bucket_module" {
   attach_policy = true
   policy        = data.aws_iam_policy_document.bucket_policy.json
 
-  versioning {
-    enabled = true
+  versioning = {
+    status     = true
   }
 }
