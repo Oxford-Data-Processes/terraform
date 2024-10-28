@@ -31,7 +31,7 @@ resource "aws_lambda_permission" "allow_eventbridge" {
 module "eventbridge" {
   source = "terraform-aws-modules/eventbridge/aws"
 
-  bus_name = var.bus_name
+  bus_name = "${var.project}-${var.lambda_function_name}-event-bus"
 
   rules = {
     global_event_bus = {
