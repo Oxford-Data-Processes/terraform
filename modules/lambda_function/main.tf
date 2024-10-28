@@ -34,7 +34,7 @@ module "eventbridge" {
   bus_name = var.bus_name
 
   rules = {
-    local.rule_name = {
+    global_event_bus = {
       name          = local.rule_name
       event_pattern = jsonencode({ "source": ["com.oxforddataprocesses"] })
       enabled       = true
@@ -42,7 +42,7 @@ module "eventbridge" {
   }
 
   targets = {
-    local.rule_name = [
+    global_event_bus = [
       {
         name = local.target_name
         arn  = "arn:aws:lambda:${var.aws_region}:${var.aws_account_id}:function:${local.lambda_function}"
