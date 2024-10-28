@@ -28,19 +28,20 @@ module "eventbridge" {
   bus_name = "${var.project}-${var.lambda_function_name}-event-bus"
 
   rules = {
-    "${var.project}-${var.lambda_function_name}-event-bus-rule" = {
-      name = "${var.project}-${var.lambda_function_name}-event-bus-rule"
+    lambdas = {
+      name          = "${var.project}-${var.lambda_function_name}-event-bus-rule"
       event_pattern = jsonencode({ "source" : ["com.oxforddataprocesses"] })
       enabled       = true
     }
   }
 
   targets = {
-    "${var.project}-${var.lambda_function_name}-event-bus-target" = [
+    lambdas = [
       {
         name = "${var.project}-${var.lambda_function_name}"
         arn  = "arn:aws:lambda:${var.aws_region}:${var.aws_account_id}:function:${var.project}-${var.lambda_function_name}"
-      },
+      }
     ]
   }
 }
+
