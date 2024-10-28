@@ -1,8 +1,14 @@
+locals {
+  rule_name       = "${var.project}-${var.lambda_function_name}-event-bus-rule"
+  target_name     = "${var.project}-${var.lambda_function_name}-event-bus-target"
+  lambda_function = "${var.project}-${var.lambda_function_name}"
+}
+
 module "lambda_function_module" {
   source         = "terraform-aws-modules/lambda/aws"
-  function_name  = "${var.project}-${var.lambda_function_name}"
+  function_name  = local.lambda_function
   create_package = false
-  image_uri      = "${var.aws_account_id}.dkr.ecr.${var.aws_region}.amazonaws.com/${var.project}-${var.lambda_function_name}-image:${var.version_number}"
+  image_uri      = "${var.aws_account_id}.dkr.ecr.${var.aws_region}.amazonaws.com/${local.lambda_function}-image:${var.version_number}"
   package_type   = "Image"
 
   environment_variables = {
@@ -17,30 +23,30 @@ module "lambda_function_module" {
 resource "aws_lambda_permission" "allow_eventbridge" {
   statement_id  = "AllowExecutionFromEventBridge"
   action        = "lambda:InvokeFunction"
-  function_name = "${var.project}-${var.lambda_function_name}"
+  function_name = local.lambda_function
   principal     = "events.amazonaws.com"
-  source_arn    = "arn:aws:events:${var.aws_region}:${var.aws_account_id}:rule/${var.project}-${var.lambda_function_name}-event-bus/${var.project}-${var.lambda_function_name}-event-bus-rule"
+  source_arn    = "arn:aws:events:${var.aws_region}:${var.aws_account_id}:rule/${local.rule_name}"
 }
 
 module "eventbridge" {
   source = "terraform-aws-modules/eventbridge/aws"
 
-  bus_name = "${var.project}-${var.lambda_function_name}-event-bus"
+  bus_name = var.bus_name
 
   rules = {
-    "${var.project}-${var.lambda_function_name}-rule" = {
-      name          = "${var.project}-${var.lambda_function_name}-event-bus-rule"
-      event_pattern = jsonencode({ "source" : ["com.oxforddataprocesses"] })
+    local.rule_name = {
+      name          = local.rule_name
+      event_pattern = jsonencode({ "source": ["com.oxforddataprocesses"] })
       enabled       = true
     }
   }
 
   targets = {
-    "${var.project}-${var.lambda_function_name}-target" = [
+    local.rule_name = [
       {
-        name = "${var.project}-${var.lambda_function_name}"
-        arn  = "arn:aws:lambda:${var.aws_region}:${var.aws_account_id}:function:${var.project}-${var.lambda_function_name}"
-      }
+        name = local.target_name
+        arn  = "arn:aws:lambda:${var.aws_region}:${var.aws_account_id}:function:${local.lambda_function}"
+      },
     ]
   }
 }
