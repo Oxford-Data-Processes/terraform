@@ -13,3 +13,34 @@ module "lambda_function_module" {
   timeout     = 900
   memory_size = 2048
 }
+
+resource "aws_lambda_permission" "allow_eventbridge" {
+  statement_id  = "AllowExecutionFromEventBridge"
+  action        = "lambda:InvokeFunction"
+  function_name = "${var.project}-${var.lambda_function_name}"
+  principal     = "events.amazonaws.com"
+  source_arn    = "arn:aws:events:${var.aws_region}:${var.aws_account_id}:rule/${var.project}-${var.lambda_function_name}-event-bus/${var.project}-${var.lambda_function_name}-event-bus-rule"
+}
+
+module "eventbridge" {
+  source = "terraform-aws-modules/eventbridge/aws"
+
+  bus_name = "${var.project}-${var.lambda_function_name}-event-bus"
+
+  rules = {
+    lambda_event_bus = {
+      name = "${var.project}-${var.lambda_function_name}-event-bus"
+      event_pattern = jsonencode({ "source" : ["com.oxforddataprocesses"] })
+      enabled       = true
+    }
+  }
+
+  targets = {
+    lambda_event_bus = [
+      {
+        name = "${var.project}-${var.lambda_function_name}"
+        arn  = "arn:aws:lambda:${var.aws_region}:${var.aws_account_id}:function:${var.project}-${var.lambda_function_name}"
+      },
+    ]
+  }
+}
