@@ -1,8 +1,3 @@
-variable "lambda_function_name" {
-  description = "The name of the Lambda function"
-  type        = string
-}
-
 variable "aws_account_id" {
   description = "The AWS account ID"
   type        = string
