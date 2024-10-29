@@ -5,7 +5,7 @@ resource "aws_cloudwatch_event_bus" "event_bus" {
 resource "aws_cloudwatch_event_rule" "event_bus_rule" {
   name               = "${var.project}-${var.lambda_function_name}-event-bus-rule"
   event_bus_name     = aws_cloudwatch_event_bus.event_bus.name
-  event_pattern      = jsonencode({ "source" : ["com.oxforddataprocesses"] })
+  event_pattern      = var.event_pattern
   state              = "ENABLED"
 }
 

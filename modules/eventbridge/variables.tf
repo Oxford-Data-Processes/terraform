@@ -18,3 +18,7 @@ variable "project" {
   type        = string
 }
 
+variable "event_pattern" {
+  description = "The event pattern for the EventBridge rule"
+  type        = string
+}
