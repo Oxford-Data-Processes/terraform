@@ -3,6 +3,11 @@ variable "lambda_function_name" {
   type        = string
 }
 
+variable "event_pattern" {
+  description = "The event pattern for the EventBridge rule"
+  type        = string
+}
+
 variable "aws_account_id" {
   description = "The AWS account ID"
   type        = string
@@ -18,7 +23,4 @@ variable "project" {
   type        = string
 }
 
-variable "event_pattern" {
-  description = "The event pattern for the EventBridge rule"
-  type        = string
-}
+
