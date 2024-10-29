@@ -1,4 +1,3 @@
-
 module "lambda_function_module" {
   source         = "terraform-aws-modules/lambda/aws"
   function_name  = "${var.project}-${var.lambda_function_name}"
