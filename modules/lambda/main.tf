@@ -1,4 +1,4 @@
-module "lambda_function_module" {
+module "lambda_module" {
   source         = "terraform-aws-modules/lambda/aws"
   function_name  = "${var.project}-${var.lambda_function_name}"
   create_package = false
