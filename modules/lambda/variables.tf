@@ -18,11 +18,6 @@ variable "stage" {
   type        = string
 }
 
-variable "project" {
-  description = "The name of the project"
-  type        = string
-}
-
 variable "aws_access_key_id_admin" {
   description = "The AWS access key ID for the admin user"
   type        = string
