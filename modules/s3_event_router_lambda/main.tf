@@ -1,12 +1,12 @@
 locals {
-  lambda_function_name = "s3-event-router-lambda"
+  lambda_function_name = "${var.project}-s3-event-router-lambda"
 }
 
 module "s3_event_router_lambda" {
   source         = "terraform-aws-modules/lambda/aws"
-  function_name  = "${var.project}-${local.lambda_function_name}"
+  function_name  = local.lambda_function_name
   create_package = false
-  image_uri      = "${var.aws_account_id}.dkr.ecr.${var.aws_region}.amazonaws.com/${var.project}-${local.lambda_function_name}-image:${var.version_number}"
+  image_uri      = "${var.aws_account_id}.dkr.ecr.${var.aws_region}.amazonaws.com/${local.lambda_function_name}-image:${var.version_number}"
   package_type   = "Image"
 
   environment_variables = {
@@ -21,7 +21,7 @@ module "s3_event_router_lambda" {
 resource "aws_lambda_permission" "allow_s3_event_router" {
   statement_id  = "AllowExecutionFromS3"
   action        = "lambda:InvokeFunction"
-  function_name = "${var.project}-${local.lambda_function_name}"
+  function_name = local.lambda_function_name
   principal     = "s3.amazonaws.com"
   source_arn    = "arn:aws:s3:::${var.project}-bucket-${var.aws_account_id}"
 }
@@ -31,7 +31,7 @@ resource "aws_s3_bucket_notification" "s3_event_router" {
 
   lambda_function {
     events = ["s3:ObjectCreated:*"]
-    lambda_function_arn = "arn:aws:lambda:${var.aws_region}:${var.aws_account_id}:function:${var.project}-${local.lambda_function_name}"
+    lambda_function_arn = "arn:aws:lambda:${var.aws_region}:${var.aws_account_id}:function:${local.lambda_function_name}"
   }
 
   depends_on = [aws_lambda_permission.allow_s3_event_router]

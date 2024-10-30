@@ -1,8 +1,8 @@
 module "lambda_module" {
   source         = "terraform-aws-modules/lambda/aws"
-  function_name  = "${var.project}-${var.lambda_function_name}"
+  function_name  = ${var.lambda_function_name}
   create_package = false
-  image_uri      = "${var.aws_account_id}.dkr.ecr.${var.aws_region}.amazonaws.com/${var.project}-${var.lambda_function_name}-image:${var.version_number}"
+  image_uri      = "${var.aws_account_id}.dkr.ecr.${var.aws_region}.amazonaws.com/${var.lambda_function_name}-image:${var.version_number}"
   package_type   = "Image"
 
   environment_variables = {
