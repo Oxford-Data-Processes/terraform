@@ -1,6 +1,6 @@
 locals {
   lambda_function_name = "${var.project}-api-lambda"
-  api_lambda_arn = "arn:aws:lambda:${var.aws_region}:${var.aws_account_id}:function:${var.project}-api-lambda"
+  api_lambda_arn       = "arn:aws:lambda:${var.aws_region}:${var.aws_account_id}:function:${var.project}-api-lambda"
 }
 
 module "api_gateway_lambda" {
@@ -20,7 +20,7 @@ module "api_gateway_lambda" {
 }
 
 resource "aws_api_gateway_rest_api" "rest_api" {
-  name        = "${var.project}-api"
+  name = "${var.project}-api"
 }
 
 resource "aws_api_gateway_resource" "api_resource" {
