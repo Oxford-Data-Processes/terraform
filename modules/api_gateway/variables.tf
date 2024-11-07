@@ -32,8 +32,3 @@ variable "version_number" {
   description = "The version number of the Lambda function"
   type        = string
 }
-
-variable "api_resource_path_part" {
-  description = "The path part of the API resource"
-  type        = string
-}
