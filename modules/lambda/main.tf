@@ -13,15 +13,3 @@ module "lambda_module" {
   timeout     = 900
   memory_size = 2048
 }
-
-resource "null_resource" "cleanup_old_versions" {
-  triggers = {
-    image_uri = module.lambda_module.image_uri
-  }
-
-  provisioner "local-exec" {
-    command = <<EOT
-      aws lambda list-versions-by-function --function-name ${var.lambda_function_name} --query 'Versions[?Version!=`$LATEST`].Version' --output text | xargs -I {} aws lambda delete-function --function-name ${var.lambda_function_name} --qualifier {}
-    EOT
-  }
-}
