@@ -36,7 +36,7 @@ resource "aws_api_gateway_method" "api_get_method" {
   rest_api_id   = aws_api_gateway_rest_api.rest_api.id
 }
 
-resource "aws_api_gateway_integration" "api_integration" {
+resource "aws_api_gateway_integration" "api_integration_get" {
   http_method = aws_api_gateway_method.api_get_method.http_method
   resource_id = aws_api_gateway_resource.api_resource.id
   rest_api_id = aws_api_gateway_rest_api.rest_api.id
@@ -53,7 +53,7 @@ resource "aws_api_gateway_method" "api_post_method" {
   rest_api_id   = aws_api_gateway_rest_api.rest_api.id
 }
 
-resource "aws_api_gateway_integration" "api_integration" {
+resource "aws_api_gateway_integration" "api_integration_post" {
   http_method = aws_api_gateway_method.api_post_method.http_method
   resource_id = aws_api_gateway_resource.api_resource.id
   rest_api_id = aws_api_gateway_rest_api.rest_api.id
