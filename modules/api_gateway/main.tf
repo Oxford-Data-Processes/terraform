@@ -63,7 +63,6 @@ resource "aws_api_gateway_integration" "api_integration_post" {
   uri = "arn:aws:apigateway:${var.aws_region}:lambda:path/2015-03-31/functions/${local.api_lambda_arn}/invocations"
 }
 
-
 resource "aws_lambda_permission" "allow_api_gateway" {
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
@@ -75,7 +74,6 @@ resource "aws_lambda_permission" "allow_api_gateway" {
 
 resource "aws_api_gateway_deployment" "deployment" {
   rest_api_id = aws_api_gateway_rest_api.rest_api.id
-  stage_name  = var.stage
 }
 
 resource "aws_api_gateway_stage" "stage" {
