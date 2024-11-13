@@ -24,60 +24,43 @@ resource "aws_api_gateway_rest_api" "rest_api" {
 }
 
 resource "aws_api_gateway_resource" "api_resource" {
-  rest_api_id = aws_api_gateway_rest_api.rest_api.id
   parent_id   = aws_api_gateway_rest_api.rest_api.root_resource_id
   path_part   = "items"
+  rest_api_id = aws_api_gateway_rest_api.rest_api.id
 }
 
 resource "aws_api_gateway_method" "api_get_method" {
-  rest_api_id   = aws_api_gateway_rest_api.rest_api.id
-  resource_id   = aws_api_gateway_resource.api_resource.id
-  http_method   = "GET"
   authorization = "NONE"
+  http_method   = "GET"
+  resource_id   = aws_api_gateway_resource.api_resource.id
+  rest_api_id   = aws_api_gateway_rest_api.rest_api.id
 }
 
 resource "aws_api_gateway_integration" "api_integration" {
-  rest_api_id             = aws_api_gateway_rest_api.rest_api.id
-  resource_id             = aws_api_gateway_resource.api_resource.id
-  http_method             = aws_api_gateway_method.api_get_method.http_method
-  integration_http_method = "POST"
-  type                    = "AWS_PROXY"
-
-  uri = "arn:aws:apigateway:${var.aws_region}:lambda:path/2015-03-31/functions/${local.api_lambda_arn}/invocations"
-}
-
-resource "aws_api_gateway_method" "api_method_post" {
-  rest_api_id   = aws_api_gateway_rest_api.rest_api.id
-  resource_id   = aws_api_gateway_resource.api_resource.id
-  http_method   = "POST"
-  authorization = "NONE"
-}
-
-resource "aws_api_gateway_integration" "api_integration_post" {
-  rest_api_id             = aws_api_gateway_rest_api.rest_api.id
-  resource_id             = aws_api_gateway_resource.api_resource.id
-  http_method             = aws_api_gateway_method.api_method_post.http_method
-  integration_http_method = "POST"
-  type                    = "AWS_PROXY"
-
-  uri = "arn:aws:apigateway:${var.aws_region}:lambda:path/2015-03-31/functions/${local.api_lambda_arn}/invocations"
-}
-
-resource "aws_lambda_permission" "allow_api_gateway" {
-  statement_id  = "AllowAPIGatewayInvoke"
-  action        = "lambda:InvokeFunction"
-  function_name = local.lambda_function_name
-  principal     = "apigateway.amazonaws.com"
-
-  source_arn = "${aws_api_gateway_rest_api.rest_api.execution_arn}/*"
+  http_method = aws_api_gateway_method.api_get_method.http_method
+  resource_id = aws_api_gateway_resource.api_resource.id
+  rest_api_id = aws_api_gateway_rest_api.rest_api.id
+  type        = "AWS_PROXY"
 }
 
 resource "aws_api_gateway_deployment" "deployment" {
   rest_api_id = aws_api_gateway_rest_api.rest_api.id
+
+  triggers = {
+    redeployment = sha1(jsonencode([
+      aws_api_gateway_resource.api_resource.id,
+      aws_api_gateway_method.api_get_method.id,
+      aws_api_gateway_integration.api_integration.id,
+    ]))
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_api_gateway_stage" "stage" {
+  deployment_id = aws_api_gateway_deployment.deployment.id
   rest_api_id   = aws_api_gateway_rest_api.rest_api.id
   stage_name    = var.stage
-  deployment_id = aws_api_gateway_deployment.deployment.id
 }
